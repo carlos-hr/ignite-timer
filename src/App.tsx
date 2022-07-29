@@ -5,7 +5,6 @@ import { defaultTheme } from "./styles/themes/default";
 function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
-      <h1>eae</h1>
       <GlobalStyle />
     </ThemeProvider>
   );
