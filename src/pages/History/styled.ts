@@ -60,8 +60,14 @@ export const HistoryList = styled.div`
   }
 `;
 
+const STATUS_COLORS = {
+  complete: "green-500",
+  canceled: "red-500",
+  doing: "yellow-500",
+} as const;
+
 interface StatusProps {
-  status: "complete" | "canceled" | "doing";
+  status: keyof typeof STATUS_COLORS;
 }
 
 export const Status = styled.span<StatusProps>`
@@ -74,15 +80,6 @@ export const Status = styled.span<StatusProps>`
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
-    background: ${(props) => {
-      switch (props.status) {
-        case "canceled":
-          return props.theme["red-500"];
-        case "complete":
-          return props.theme["green-500"];
-        case "doing":
-          return props.theme["yellow-500"];
-      }
-    }};
+    background: ${(props) => props.theme[STATUS_COLORS[props.status]]};
   }
 `;
