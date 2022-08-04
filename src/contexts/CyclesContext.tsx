@@ -63,6 +63,21 @@ export const CyclesContextProvider = ({
           activeCycleId: null,
         };
       }
+
+      if (action.type === "FINISH_CURRENT_CYCLE") {
+        return {
+          ...state,
+          cycles: state.cycles.map((cycle) => {
+            if (cycle.id === state.activeCycleId) {
+              return { ...cycle, finishedDate: new Date() };
+            } else {
+              return cycle;
+            }
+          }),
+          activeCycleId: null,
+        };
+      }
+
       return state;
     },
     {
