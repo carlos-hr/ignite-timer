@@ -1,3 +1,4 @@
+import produce from "immer";
 import { ActionTypes } from "./actions";
 
 export interface Cycle {
@@ -15,38 +16,39 @@ interface CyclesState {
 }
 
 export function cyclesReducer(state: CyclesState, action: any) {
-  switch (action.type) {
-    case ActionTypes.START_NEW_CYCLE:
-      return {
-        ...state,
-        cycles: [...state.cycles, action.payload.newCycle],
-        activeCycleId: action.payload.newCycle.id,
-      };
-    case ActionTypes.STOP_CURRENT_CYCLE:
-      return {
-        ...state,
-        cycles: state.cycles.map((cycle) => {
-          if (cycle.id === state.activeCycleId) {
-            return { ...cycle, interruptedDate: new Date() };
-          } else {
-            return cycle;
-          }
-        }),
-        activeCycleId: null,
-      };
-    case ActionTypes.FINISH_CURRENT_CYCLE:
-      return {
-        ...state,
-        cycles: state.cycles.map((cycle) => {
-          if (cycle.id === state.activeCycleId) {
-            return { ...cycle, finishedDate: new Date() };
-          } else {
-            return cycle;
-          }
-        }),
-        activeCycleId: null,
-      };
-    default:
-      return state;
-  }
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case ActionTypes.START_NEW_CYCLE: {
+        draft.cycles.push(action.payload.newCycle);
+        draft.activeCycleId = action.payload.newCycle.id;
+        break;
+      }
+      case ActionTypes.STOP_CURRENT_CYCLE: {
+        const currentCycleIndex = state.cycles.findIndex(
+          (cycle) => cycle.id === state.activeCycleId
+        );
+
+        if (currentCycleIndex < 0) {
+          return state;
+        }
+        draft.cycles[currentCycleIndex].interruptedDate = new Date();
+        draft.activeCycleId = null;
+        break;
+      }
+      case ActionTypes.FINISH_CURRENT_CYCLE: {
+        const currentCycleIndex = state.cycles.findIndex(
+          (cycle) => cycle.id === state.activeCycleId
+        );
+
+        if (currentCycleIndex < 0) {
+          return state;
+        }
+        draft.cycles[currentCycleIndex].finishedDate = new Date();
+        draft.activeCycleId = null;
+        break;
+      }
+      default:
+        return state;
+    }
+  });
 }
