@@ -77,7 +77,6 @@ export const CyclesContextProvider = ({
       duration: data.duration,
       startDate: new Date(),
     };
-    // setCycles((state) => [...state, newCycle]);
     dispatch({
       type: "START_NEW_CYCLE",
       payload: {
@@ -89,15 +88,6 @@ export const CyclesContextProvider = ({
   }
 
   function interruptCycle() {
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, interruptedDate: new Date() };
-    //     } else {
-    //       return cycle;
-    //     }
-    //   })
-    // );
     dispatch({
       type: "STOP_CURRENT_CYCLE",
       payload: {
